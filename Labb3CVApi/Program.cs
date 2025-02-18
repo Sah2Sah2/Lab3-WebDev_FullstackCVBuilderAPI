@@ -15,7 +15,7 @@ namespace Labb3CVApi
                 options.AddPolicy("AllowLocalhost",
                     policy =>
                     {
-                        policy.WithOrigins("https://localhost:5000") // Allow Blazor 
+                        policy.WithOrigins("https://localhost:5001") // Allow Blazor 
                               .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
