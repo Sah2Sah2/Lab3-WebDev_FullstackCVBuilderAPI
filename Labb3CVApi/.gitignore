@@ -1,0 +1,2 @@
+﻿# Ignore appsettings.json to avoid pushing sensitive data
+appsettings.json
