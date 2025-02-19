@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Labb3CVApi.Data
 {
-    public class CvDbContext: DbContext
+    public class CvDbContext : DbContext
     {
         public CvDbContext(DbContextOptions<CvDbContext> options) : base(options) { }
 

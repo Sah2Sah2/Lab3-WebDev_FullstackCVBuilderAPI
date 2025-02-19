@@ -1,6 +1,7 @@
 using Labb3CVApi.Data;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Labb3CVApi
 {
     public class Program
@@ -15,8 +16,8 @@ namespace Labb3CVApi
                 options.AddPolicy("AllowLocalhost",
                     policy =>
                     {
-                        policy.WithOrigins("https://localhost:5001") // Allow Blazor 
-                              .AllowAnyHeader()
+                        policy.WithOrigins("https://localhost:7208/") // Allow Blazor 
+                             .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
             });

@@ -2,6 +2,9 @@
 using Labb3CVApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Labb3CVApi.Controllers
 {
@@ -20,18 +23,14 @@ namespace Labb3CVApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skill>>> GetSkills()
         {
-            // Include the related Projects for each Skill
-            return await _context.Skills.Include(s => s.Projects).ToListAsync();
+            return await _context.Skills.ToListAsync();
         }
 
-        // GET: api/Skills/id
+        // GET: api/Skills/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Skill>> GetSkill(int id)
         {
-            // Projects for the specific Skill
-            var skill = await _context.Skills
-                                       .Include(s => s.Projects) // Projects
-                                       .FirstOrDefaultAsync(s => s.Id == id);
+            var skill = await _context.Skills.FindAsync(id);
 
             if (skill == null)
             {
@@ -51,7 +50,7 @@ namespace Labb3CVApi.Controllers
             return CreatedAtAction(nameof(GetSkill), new { id = skill.Id }, skill);
         }
 
-        // PUT: api/Skills/id
+        // PUT: api/Skills/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSkill(int id, Skill skill)
         {
@@ -68,20 +67,17 @@ namespace Labb3CVApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SkillExists(id))
+                if (!_context.Skills.Any(e => e.Id == id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
-        // DELETE: api/Skills/id
+        // DELETE: api/Skills/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSkill(int id)
         {
@@ -95,11 +91,6 @@ namespace Labb3CVApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SkillExists(int id)
-        {
-            return _context.Skills.Any(e => e.Id == id);
         }
     }
 }

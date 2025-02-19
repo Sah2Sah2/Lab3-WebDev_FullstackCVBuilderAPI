@@ -3,6 +3,7 @@ using Labb3CVApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Labb3CVApi.Migrations
 {
     [DbContext(typeof(CvDbContext))]
-    partial class CvDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250219145554_UpdateProjectSkillRelation")]
+    partial class UpdateProjectSkillRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,6 +53,21 @@ namespace Labb3CVApi.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("Labb3CVApi.Models.ProjectSkill", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "SkillId");
+
+                    b.HasIndex("SkillId");
+
+                    b.ToTable("ProjectSkills");
+                });
+
             modelBuilder.Entity("Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -71,6 +89,35 @@ namespace Labb3CVApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("Labb3CVApi.Models.ProjectSkill", b =>
+                {
+                    b.HasOne("Labb3CVApi.Models.Project", "Project")
+                        .WithMany("ProjectSkills")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Skill", "Skill")
+                        .WithMany("ProjectSkills")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("Labb3CVApi.Models.Project", b =>
+                {
+                    b.Navigation("ProjectSkills");
+                });
+
+            modelBuilder.Entity("Skill", b =>
+                {
+                    b.Navigation("ProjectSkills");
                 });
 #pragma warning restore 612, 618
         }

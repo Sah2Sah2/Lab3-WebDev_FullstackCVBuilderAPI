@@ -2,6 +2,9 @@
 using Labb3CVApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Labb3CVApi.Controllers
 {
@@ -20,18 +23,14 @@ namespace Labb3CVApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            // Include related Skills when retrieving Projects
-            return await _context.Projects.Include(p => p.Skill).ToListAsync();
+            return await _context.Projects.ToListAsync();
         }
 
-        // GET: api/Projects/id
+        // GET: api/Projects/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Project>> GetProject(int id)
         {
-            // Include related Skills when retrieving a single Project
-            var project = await _context.Projects
-                                         .Include(p => p.Skill)
-                                         .FirstOrDefaultAsync(p => p.Id == id);
+            var project = await _context.Projects.FindAsync(id);
 
             if (project == null)
             {
@@ -51,7 +50,7 @@ namespace Labb3CVApi.Controllers
             return CreatedAtAction(nameof(GetProject), new { id = project.Id }, project);
         }
 
-        // PUT: api/Projects/id
+        // PUT: api/Projects/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(int id, Project project)
         {
@@ -68,20 +67,17 @@ namespace Labb3CVApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProjectExists(id))
+                if (!_context.Projects.Any(e => e.Id == id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
-        // DELETE: api/Projects/id
+        // DELETE: api/Projects/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
@@ -95,11 +91,6 @@ namespace Labb3CVApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

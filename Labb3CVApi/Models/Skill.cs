@@ -7,6 +7,5 @@ public class Skill
     public int YearsOfExperience { get; set; }
     public int SkillLevel { get; set; }
 
-    // Allow null 
-    public ICollection<Project>? Projects { get; set; } = new List<Project>();
 }
+
