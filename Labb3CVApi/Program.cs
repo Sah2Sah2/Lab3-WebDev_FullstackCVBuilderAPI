@@ -16,11 +16,22 @@ namespace Labb3CVApi
                 options.AddPolicy("AllowLocalhost",
                     policy =>
                     {
-                        policy.WithOrigins("https://localhost:7208/") // Allow Blazor 
-                             .AllowAnyHeader()
+                        // Get the frontend URL from environment variable (or app settings in development)
+                        var frontendUrl = builder.Configuration["FrontendUrl"];
+
+                        // In case the environment variable is not set, fallback to localhost URL in development
+                        if (string.IsNullOrEmpty(frontendUrl))
+                        {
+                            frontendUrl = "http://localhost:5000"; // Local development URL
+                        }
+
+                        // Allow localhost in development and the frontend URL in production
+                        policy.WithOrigins("http://localhost:5000", frontendUrl)
+                              .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
             });
+
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
